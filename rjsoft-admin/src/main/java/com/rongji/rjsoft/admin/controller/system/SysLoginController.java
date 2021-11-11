@@ -1,0 +1,87 @@
+package com.rongji.rjsoft.admin.controller.system;
+
+import cn.hutool.core.bean.BeanUtil;
+import com.rongji.rjsoft.core.ao.system.LoginAo;
+import com.rongji.rjsoft.common.security.entity.LoginUser;
+import com.rongji.rjsoft.common.security.util.TokenUtils;
+import com.rongji.rjsoft.common.util.ServletUtils;
+import com.rongji.rjsoft.core.entity.system.SysUser;
+import com.rongji.rjsoft.core.enums.enums.ResponseEnum;
+import com.rongji.rjsoft.admin.service.ISysLoginService;
+import com.rongji.rjsoft.admin.service.ISysMenuService;
+import com.rongji.rjsoft.admin.service.ISysRoleService;
+import com.rongji.rjsoft.core.vo.vo.ResponseVo;
+import com.rongji.rjsoft.core.vo.vo.system.menu.SysMenuInfoVo;
+import com.rongji.rjsoft.core.vo.vo.system.user.CurrentUserInfoVo;
+import com.rongji.rjsoft.core.vo.vo.system.user.SysUserVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * @description: 登录
+ * @author: JohnYehyo
+ * @create: 2021-04-26 15:31:17
+ */
+@Api(tags = "系统管理-登录管理")
+@RestController
+@AllArgsConstructor
+public class SysLoginController {
+
+    private final ISysLoginService sysLoginService;
+    private final TokenUtils tokenUtils;
+    private final ISysMenuService sysMenuService;
+    private final ISysRoleService sysRoleService;
+
+    /**
+     * 登录
+     * @param loginAo 登录信息
+     * @return 登录结果
+     */
+    @ApiOperation(value = "登录")
+    @PostMapping(value = "login")
+    public Object login(@Valid @RequestBody LoginAo loginAo){
+        String token = sysLoginService.login(loginAo);
+        return ResponseVo.response(ResponseEnum.SUCCESS, token);
+    }
+
+    /**
+     * 获取当前用户信息
+     * @return 当前用户信息
+     */
+    @ApiOperation(value = "获取当前用户信息")
+    @GetMapping(value = "getUserInfo")
+    public Object userInfo(){
+        LoginUser loginUser = tokenUtils.getLoginUser(ServletUtils.getRequest());
+        SysUser user = loginUser.getUser();
+        SysUserVo sysUserVo = new SysUserVo();
+        BeanUtil.copyProperties(user, sysUserVo);
+        Set<String> roles = loginUser.getRoles();
+        //暂时不需要
+//        Set<String> menus = sysMenuService.getMenuPermsByUserId(user.getUserId());
+        CurrentUserInfoVo currentUserInfoVo = new CurrentUserInfoVo(sysUserVo, null, null);
+        return ResponseVo.response(ResponseEnum.SUCCESS, currentUserInfoVo);
+    }
+
+    /**
+     * 获取当前用户路由信息
+     * @return 当前用户路由信息
+     */
+    @ApiOperation(value = "获取当前用户路由信息")
+    @GetMapping(value = "routes")
+    public Object routes(){
+        LoginUser loginUser = tokenUtils.getLoginUser(ServletUtils.getRequest());
+        SysUser user = loginUser.getUser();
+        List<SysMenuInfoVo> list = sysMenuService.getRoutesByUserId(user.getUserId());
+        return ResponseVo.response(ResponseEnum.SUCCESS, list);
+    }
+
+}
