@@ -35,7 +35,7 @@ public class Swagger2Config {
                 .enable(swaggerEnable)
                 .select()
                 //这里指定Controller扫描包路径
-                .apis(RequestHandlerSelectors.basePackage("com.rongji.rjsoft.admin.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.rongji.rjsoft.data.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
