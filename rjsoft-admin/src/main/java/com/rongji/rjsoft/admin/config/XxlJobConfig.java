@@ -1,4 +1,4 @@
-//package com.rongji.rjsoft.web.config;
+//package com.rongji.rjsoft.admin.config;
 //
 //import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 //import org.slf4j.Logger;
