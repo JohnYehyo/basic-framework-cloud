@@ -1,7 +1,7 @@
 package com.rongji.rjsoft.common.util;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.rongji.rjsoft.core.vo.vo.CommonPage;
+import com.rongji.core.vo.CommonPage;
 
 /**
  * @description: 分页工具

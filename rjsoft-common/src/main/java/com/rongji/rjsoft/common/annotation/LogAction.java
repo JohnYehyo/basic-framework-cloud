@@ -1,7 +1,7 @@
 package com.rongji.rjsoft.common.annotation;
 
-import com.rongji.rjsoft.core.enums.enums.LogTypeEnum;
-import com.rongji.rjsoft.core.enums.enums.OperatorTypeEnum;
+import com.rongji.core.enums.LogTypeEnum;
+import com.rongji.core.enums.OperatorTypeEnum;
 
 import java.lang.annotation.*;
 

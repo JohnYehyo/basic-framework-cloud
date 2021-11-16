@@ -1,8 +1,8 @@
 package com.rongji.rjsoft.common.security.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rongji.rjsoft.core.entity.system.SysDept;
-import com.rongji.rjsoft.core.entity.system.SysUser;
+import com.rongji.core.entity.system.SysDept;
+import com.rongji.core.entity.system.SysUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

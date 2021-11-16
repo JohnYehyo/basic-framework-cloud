@@ -6,10 +6,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <modules>
-        <module>rjsoft-data</module>
-        <module>rjsoft-core</module>
-        <module>rjsoft-admin</module>
         <module>rjsoft-common</module>
+        <module>rjsoft-core</module>
+        <module>rjsoft-search</module>
+        <module>rjsoft-system</module>
+        <module>rjsoft-search-api</module>
     </modules>
 
     <parent>
@@ -54,8 +55,6 @@
         <jasypt-springboot-starter.version>3.0.4</jasypt-springboot-starter.version>
         <center-core.version>1.1.8</center-core.version>
         <center-org.version>1.1.6</center-org.version>
-        <mina-core.version>2.0.20</mina-core.version>
-        <mina-integration.version>2.0.20</mina-integration.version>
     </properties>
 
 
@@ -254,17 +253,6 @@
                 <version>${center-org.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.mina</groupId>
-                <artifactId>mina-core</artifactId>
-                <version>${mina-core.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.mina</groupId>
-                <artifactId>mina-integration-beans</artifactId>
-                <version>${mina-integration.version}</version>
-            </dependency>
 
         </dependencies>
     </dependencyManagement>

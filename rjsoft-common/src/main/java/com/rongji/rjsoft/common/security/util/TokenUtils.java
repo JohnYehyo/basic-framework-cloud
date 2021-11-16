@@ -4,7 +4,7 @@ import com.rongji.rjsoft.common.security.entity.LoginUser;
 import com.rongji.rjsoft.common.util.RedisCache;
 import com.rongji.rjsoft.common.util.ServletUtils;
 import com.rongji.rjsoft.common.util.http.IpUtils;
-import com.rongji.rjsoft.core.constants.Constants;
+import com.rongji.core.constants.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
