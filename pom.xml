@@ -55,6 +55,7 @@
         <jasypt-springboot-starter.version>3.0.4</jasypt-springboot-starter.version>
         <center-core.version>1.1.8</center-core.version>
         <center-org.version>1.1.6</center-org.version>
+        <elasticsearch.version>6.8.19</elasticsearch.version>
     </properties>
 
 
@@ -251,6 +252,19 @@
                 <groupId>com.yskj.org_jar</groupId>
                 <artifactId>org_jar</artifactId>
                 <version>${center-org.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-high-level-client</artifactId>
+                <version>${elasticsearch.version}</version>
             </dependency>
 
 

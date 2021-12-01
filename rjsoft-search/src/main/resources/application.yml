@@ -63,7 +63,7 @@ yskj:
   server:
     id: 84e0382be12649e3bbd79e6b827f5a48
     name: 搜索服务
-    homepage: http://127.0.0.1/rjsoft-data/index
+    homepage: http://127.0.0.1:1234/search/index
     mainpage: /main
     noFilters: /runstate
     ssoenable: 1
