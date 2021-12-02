@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -20,14 +21,13 @@ public class SearchPageQuery<T> extends PageQuery {
      * 索引
      */
     @ApiModelProperty(value = "索引", required = true)
-//    @NotBlank(message = "索引不能为空")
+    @NotBlank(message = "索引不能为空")
     private String indexName;
 
     /**
      * 类型
      */
-    @ApiModelProperty(value = "类型", required = true)
-//    @NotBlank(message = "类型不能为空")
+    @ApiModelProperty(value = "类型")
     private String indexType;
 
     /**

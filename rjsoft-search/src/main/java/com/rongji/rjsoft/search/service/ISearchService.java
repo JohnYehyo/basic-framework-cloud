@@ -1,6 +1,7 @@
 package com.rongji.rjsoft.search.service;
 
 import com.rongji.core.vo.ResponseVo;
+import com.rongji.rjsoft.search.core.query.SearchMultiPageQuery;
 import com.rongji.rjsoft.search.core.query.SearchPageQuery;
 import com.rongji.rjsoft.search.core.query.SearchQuery;
 import com.rongji.rjsoft.search.core.search.DocAo;
@@ -76,4 +77,11 @@ public interface ISearchService {
      * @throws IOException
      */
     <T> ResponseVo<T> queryForEntity(SearchQuery searchQuery);
+
+    /**
+     * 多字段包含关键字搜索
+     * @param searchMultiPageQuery 条件对象
+     * @return 分页结果
+     */
+    <T> ResponseVo<T> multiSelect(SearchMultiPageQuery searchMultiPageQuery);
 }

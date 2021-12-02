@@ -1,5 +1,6 @@
 package com.rongji.rjsoft.search.service.impl;
 
+import com.rongji.rjsoft.search.core.query.SearchMultiPageQuery;
 import com.rongji.rjsoft.search.core.query.SearchPageQuery;
 import com.rongji.rjsoft.search.core.query.SearchQuery;
 import com.rongji.rjsoft.search.core.search.DocAo;
@@ -124,5 +125,12 @@ public class SearchServiceImpl implements ISearchService {
         String className = Thread.currentThread().getStackTrace()[1].getClassName();
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         return minaCService.sendMessage(className, methodName, new Object[]{searchQuery}, null, null);
+    }
+
+    @Override
+    public Object multiSelect(SearchMultiPageQuery searchMultiPageQuery) {
+        String className = Thread.currentThread().getStackTrace()[1].getClassName();
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        return minaCService.sendMessage(className, methodName, new Object[]{searchMultiPageQuery}, null, null);
     }
 }
