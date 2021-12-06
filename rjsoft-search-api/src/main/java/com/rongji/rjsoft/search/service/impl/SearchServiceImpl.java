@@ -80,7 +80,7 @@ public class SearchServiceImpl implements ISearchService {
 
     @Override
     @Scheduled(cron = "0/10 * * * * ?")
-    public void linktoService(){
+    public void linktoService() {
         minaCService.linktoMinaS();
     }
 
@@ -133,4 +133,5 @@ public class SearchServiceImpl implements ISearchService {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         return minaCService.sendMessage(className, methodName, new Object[]{searchMultiPageQuery}, null, null);
     }
+
 }
