@@ -59,7 +59,6 @@ yskj:
     port: 9000
   app:
     id: 3f7abd9489c0427b8ade40d1c11f7e6a
-
   server:
     id: 84e0382be12649e3bbd79e6b827f5a48
     name: 搜索服务
@@ -67,6 +66,8 @@ yskj:
     mainpage: /main
     noFilters: /runstate
     ssoenable: 1
+  domain:
+    id: e8214062bba411e7813bfa163e94e2b8
 
   mina:
     name: search_sever
