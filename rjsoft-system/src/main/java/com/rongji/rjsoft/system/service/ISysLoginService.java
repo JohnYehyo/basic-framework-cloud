@@ -15,4 +15,11 @@ public interface ISysLoginService {
      * @return 登录情况
      */
     String login(LoginAo loginAo);
+
+    /**
+     * 中心登录
+     * @param loginAo
+     * @return
+     */
+    String centerLogin(LoginAo loginAo);
 }

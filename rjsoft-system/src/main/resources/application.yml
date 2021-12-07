@@ -66,6 +66,8 @@ yskj:
     mainpage: /main
     noFilters: /runstate
     ssoenable: 1
+  domain:
+    id: e8214062bba411e7813bfa163e94e2b8
 
   mina:
     name:

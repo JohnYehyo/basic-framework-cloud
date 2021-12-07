@@ -60,6 +60,11 @@ public class LoginUser implements UserDetails {
      */
     private SysUser user;
 
+    /**
+     * 中心登录id
+     */
+    private String loginId;
+
     public String getToken() {
         return token;
     }
@@ -187,6 +192,14 @@ public class LoginUser implements UserDetails {
 
     public void setSysDept(SysDept sysDept) {
         this.sysDept = sysDept;
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     @Override
