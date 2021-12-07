@@ -143,13 +143,13 @@ public class SysLoginServiceImpl implements ISysLoginService {
 
         String username = loginAo.getUserName();
         String password = loginAo.getPassword();
-//        try {
-//            byte[] key = KEY.getBytes("utf-8");
-//            username = new String(AESUtils.decrypt(username, key), "utf-8");
-//            password = new String(AESUtils.decrypt(password, key), "utf-8");
-//        } catch (Exception e) {
-//            throw new BusinessException(ResponseEnum.ENCRYPTION_TO_DECRYPT);
-//        }
+        try {
+            byte[] key = KEY.getBytes("utf-8");
+            username = new String(AESUtils.decrypt(username, key), "utf-8");
+            password = new String(AESUtils.decrypt(password, key), "utf-8");
+        } catch (Exception e) {
+            throw new BusinessException(ResponseEnum.ENCRYPTION_TO_DECRYPT);
+        }
 
         LoginedUser loginedUser = orgService.login(APPID, DOMAINID, username, password);
 
