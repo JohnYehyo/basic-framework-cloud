@@ -13,6 +13,7 @@ import com.rongji.core.constants.Constants;
 import com.rongji.core.entity.system.SysUser;
 import com.rongji.core.entity.system.SysUserPost;
 import com.rongji.core.entity.system.SysUserRole;
+import com.rongji.rjsoft.common.util.PassWordUtils;
 import com.rongji.rjsoft.system.mapper.SysDeptMapper;
 import com.rongji.rjsoft.system.mapper.SysUserMapper;
 import com.rongji.rjsoft.system.mapper.SysUserPostMapper;
@@ -102,7 +103,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public int addUser(SysUserAo user) {
         SysUser sysUser = new SysUser();
         BeanUtil.copyProperties(user, sysUser);
-        sysUser.setPassword(SecurityUtils.encryptPassword(Constants.DEFAULT_PASSWORD));
+        sysUser.setPassword(SecurityUtils.encryptPassword(PassWordUtils.passRandom(8)));
         sysUser.setCreateBy(SecurityUtils.getUserName());
         int insert = sysUserMapper.saveUser(sysUser);
 
@@ -281,6 +282,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     /**
      * 重置密码
+     *
      * @param userId 用户id
      * @return 重置结果
      */
