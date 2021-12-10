@@ -1,6 +1,7 @@
 package com.rongji.rjsoft.system.service;
 
 import com.rongji.core.ao.system.LoginAo;
+import com.rongji.core.vo.ResponseVo;
 
 /**
  * @description: 登录退出
@@ -14,12 +15,13 @@ public interface ISysLoginService {
      * @param loginAo 请求参数体
      * @return 登录情况
      */
-    String login(LoginAo loginAo);
+    ResponseVo login(LoginAo loginAo);
 
     /**
      * 中心登录
      * @param loginAo
      * @return
      */
-    String centerLogin(LoginAo loginAo);
+    ResponseVo centerLogin(LoginAo loginAo);
+
 }

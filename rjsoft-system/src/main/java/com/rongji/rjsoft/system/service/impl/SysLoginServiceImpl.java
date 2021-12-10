@@ -1,6 +1,7 @@
 package com.rongji.rjsoft.system.service.impl;
 
 import com.rongji.core.ao.system.LoginAo;
+import com.rongji.core.vo.ResponseVo;
 import com.rongji.rjsoft.common.security.entity.LoginUser;
 import com.rongji.rjsoft.common.security.util.AESUtils;
 import com.rongji.rjsoft.common.security.util.TokenUtils;
@@ -24,6 +25,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 /**
  * @description: 登录
@@ -66,6 +70,9 @@ public class SysLoginServiceImpl implements ISysLoginService {
     @Value("${yskj.domain.id}")
     private String DOMAINID;
 
+    @Value("${JohnYehyo.pwd_time}")
+    private long PWD_TIME;
+
 
     /**
      * 登录
@@ -74,7 +81,7 @@ public class SysLoginServiceImpl implements ISysLoginService {
      * @return
      */
     @Override
-    public String login(LoginAo loginAo) {
+    public ResponseVo login(LoginAo loginAo) {
         checkCaptcha(loginAo);
 
         String username = loginAo.getUserName();
@@ -104,7 +111,25 @@ public class SysLoginServiceImpl implements ISysLoginService {
                 LogStatusEnum.LOGIN_SUCCESS.getValue());
 
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        return tokenUtils.createToken(loginUser);
+        String token = tokenUtils.createToken(loginUser);
+        return checkPasswordLimit(loginUser, token);
+    }
+
+    private ResponseVo checkPasswordLimit(LoginUser loginUser, String token) {
+        LocalDateTime lastPwdTime = loginUser.getUser().getLastPwdTime();
+        //初始登录
+        if(null == lastPwdTime){
+            return ResponseVo.response(ResponseEnum.PASSWORD_FIRST_LIMIT, token);
+        }
+        //超过最长使用限制时间未更新
+        Duration duration = Duration.between(lastPwdTime,  LocalDateTime.now());
+        if(duration.toDays() > PWD_TIME){
+            ResponseVo responseVo = new ResponseVo(ResponseEnum.PASSWORD_TIME_LIMIT.getCode(),
+                    ResponseEnum.PASSWORD_TIME_LIMIT.getValue() + PWD_TIME + "天以上,请修改密码");
+            responseVo.setData(token);
+            return responseVo;
+        }
+        return ResponseVo.response(ResponseEnum.SUCCESS, token);
     }
 
     /**
@@ -138,7 +163,7 @@ public class SysLoginServiceImpl implements ISysLoginService {
      * @return
      */
     @Override
-    public String centerLogin(LoginAo loginAo) {
+    public ResponseVo centerLogin(LoginAo loginAo) {
         checkCaptcha(loginAo);
 
         String username = loginAo.getUserName();
@@ -161,7 +186,8 @@ public class SysLoginServiceImpl implements ISysLoginService {
                 LogStatusEnum.LOGIN_SUCCESS.getValue());
 
         LoginUser loginUser = refreshAuth(loginedUser);
-        return tokenUtils.createToken(loginUser);
+        String token = tokenUtils.createToken(loginUser);
+        return checkPasswordLimit(loginUser, token);
     }
 
     private LoginUser refreshAuth(LoginedUser loginedUser) {

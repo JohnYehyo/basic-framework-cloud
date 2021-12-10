@@ -119,5 +119,9 @@ public class SysUser implements Serializable {
      */
     private String remark;
 
-
+    /**
+     * 最后修改密码时间
+     */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private LocalDateTime lastPwdTime;
 }

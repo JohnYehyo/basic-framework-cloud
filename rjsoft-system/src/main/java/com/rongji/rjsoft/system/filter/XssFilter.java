@@ -42,7 +42,7 @@ public class XssFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-        com.rongji.rjsoft.web.filter.XssHttpServletRequestWrapper xssRequest = new com.rongji.rjsoft.web.filter.XssHttpServletRequestWrapper((HttpServletRequest) request);
+        XssHttpServletRequestWrapper xssRequest = new XssHttpServletRequestWrapper((HttpServletRequest) request);
         chain.doFilter(xssRequest, response);
     }
 
