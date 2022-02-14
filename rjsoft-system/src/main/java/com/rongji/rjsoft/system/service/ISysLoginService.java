@@ -20,7 +20,7 @@ public interface ISysLoginService {
     /**
      * 中心登录
      * @param loginAo
-     * @return
+     * @return 登录情况
      */
     ResponseVo centerLogin(LoginAo loginAo);
 

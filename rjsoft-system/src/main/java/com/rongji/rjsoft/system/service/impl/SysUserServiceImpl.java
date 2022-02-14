@@ -1,6 +1,8 @@
 package com.rongji.rjsoft.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -25,11 +27,17 @@ import com.rongji.rjsoft.system.service.ISysUserService;
 import com.rongji.core.vo.CommonPage;
 import com.rongji.core.vo.system.user.SysUserInfoVo;
 import com.rongji.core.vo.system.user.SysUserVo;
+import com.yskj.service.org.IOrgService;
+import com.yskj.utils.ByteUtil;
+import com.yskj.utils.GmUtil;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +64,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private final SysDeptMapper sysDeptMapper;
 
     private final ISysPwdHistoryService sysPwdHistoryService;
+
+    private final IOrgService orgService;
 
 
     /**
@@ -321,6 +331,63 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             return password;
         }
         return "";
+    }
+
+
+    /**
+     * 重置密码
+     *
+     * @param userId 用户id
+     * @return 重置结果
+     */
+    @Override
+    public String restCenterPwd(Long userId) {
+        SysUser user = new SysUser();
+        user.setUserId(userId);
+        String password = PassWordUtils.passRandom(8);
+        String encryptNewPassword = SecurityUtils.encryptPassword(password);
+        user.setPassword(encryptNewPassword);
+        user.setUpdateBy(user.getUserName());
+        user.setUpdateTime(LocalDateTime.now());
+        user.setLastPwdTime(null);
+
+
+        JSONObject jo = restCenterPwd();
+
+
+//        if(sysUserMapper.updatePassword(user) > 0){
+//            //保存密码记录
+//            updatePwdHistory(userId, encryptNewPassword);
+//            return password;
+//        }
+        return "";
+    }
+
+    private JSONObject restCenterPwd() {
+        String domain = "e8214062bba411e7813bfa163e94e2b8";
+        PublicKey publicKey = GmUtil.getPublickeyFromX509File(new File("D:\\domainpubkey.cer"));
+        System.out.println("public key x:" + ByteUtil.bytesToHexString(((BCECPublicKey) publicKey).getQ().getAffineXCoord().getEncoded()));
+        System.out.println("public key y:" + ByteUtil.bytesToHexString(((BCECPublicKey) publicKey).getQ().getAffineYCoord().getEncoded()));
+        JSONArray persons = orgService.getpersonbyshortname(domain, "sunbadmin");
+        JSONObject result = null;
+        if (persons != null && persons.size() == 1) {
+            JSONObject person = persons.getJSONObject(0);
+            System.out.println(person.toJSONString());
+            String personid = person.getString("id");
+            JSONObject random = orgService.getSm2Random(domain, personid);
+            System.out.println(random.toJSONString());
+            String randNum = random.getString("randNum");
+            try {
+                byte[] bs = GmUtil.sm2Encrypt(randNum.getBytes("UTF-8"), publicKey);
+                String signeddata = ByteUtil.bytesToHexString(bs);
+                System.out.println(signeddata);
+                result = orgService.manageChangeuserpwd(domain, personid, "Hky4yhl9t@", signeddata);
+                System.out.println(result.toJSONString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 
     private void updatePwdHistory(Long userId, String encryptNewPassword) {

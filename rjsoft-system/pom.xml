@@ -135,6 +135,11 @@
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.rjcloud.third</groupId>
+            <artifactId>DmJdbcDriver18</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

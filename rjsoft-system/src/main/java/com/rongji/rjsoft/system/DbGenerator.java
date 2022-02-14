@@ -62,7 +62,7 @@ public class DbGenerator {
 
     //数据库表
     public static final String[] TABLE_NAME = {
-            "cms_sensitive_words"
+            "sys_role_dept"
     };
 
     /**

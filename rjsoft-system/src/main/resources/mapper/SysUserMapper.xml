@@ -25,11 +25,11 @@
         <result column="last_pwd_time" property="lastPwdTime"/>
     </resultMap>
 
-    <select id="listOfUser" resultType="com.rongji.core.vo.system.user.SysUserVo">
+    <select id="listOfUser" resultType="com.rongji.core.vo.system.user.SysUserVo" databaseId="mysql">
         select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.password, u.gender,
         u.status, u.del_flag, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from
-        sys_user u
-        left join sys_dept d on u.dept_id = d.dept_id
+        ${prefix}sys_user u
+        left join ${prefix}sys_dept d on u.dept_id = d.dept_id
         where u.del_flag = 0
         <choose>
             <when test="null != params.beginTime and null != params.endTime">
@@ -66,34 +66,100 @@
         </if>
     </select>
 
-    <select id="checkUserByUserName" resultType="Integer">
+    <select id="listOfUser" resultType="com.rongji.core.vo.system.user.SysUserVo" databaseId="dm">
+        select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.password, u.gender,
+        u.status, u.del_flag, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from
+        ${prefix}sys_user u
+        left join ${prefix}sys_dept d on u.dept_id = d.dept_id
+        where u.del_flag = 0
+        <choose>
+            <when test="null != params.beginTime and null != params.endTime">
+                AND u.create_time between #{params.beginTime} and #{params.endTime}
+            </when>
+            <when test="null != params.beginTime">
+                AND u.create_time &gt;= #{params.beginTime}
+            </when>
+            <when test="null != params.endTime">
+                AND u.create_time &lt;= #{params.endTime}
+            </when>
+            <otherwise></otherwise>
+        </choose>
+        <if test="params.status != null and params.status != ''">
+            AND u.status = #{params.status}
+        </if>
+        <if test="params.userName != null and params.userName != ''">
+            AND u.user_name like concat('%', #{params.userName}, '%')
+        </if>
+        <if test="params.nickName != null and params.nickName != ''">
+            AND u.nick_name like concat('%', #{params.nickName}, '%')
+        </if>
+        <if test="params.email != null and params.email != ''">
+            AND u.email like concat('%', #{params.email}, '%')
+        </if>
+        <if test="params.phonenumber != null and params.phonenumber != ''">
+            AND u.phonenumber like concat('%', #{params.phonenumber}, '%')
+        </if>
+        <if test="params.deptIds != null">
+            AND u.dept_id in
+            <foreach collection="params.deptIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="checkUserByUserName" resultType="Integer" databaseId="mysql">
         select count(*)
-        from sys_user
+        from ${prefix}sys_user
         where user_name = #{userName} limit 1
     </select>
 
-    <select id="checkUserByPhone" resultMap="BaseResultMap">
+    <select id="checkUserByUserName" resultType="Integer" databaseId="dm">
+        select count(*)
+        from ${prefix}sys_user
+        where user_name = #{userName} limit 1
+    </select>
+
+    <select id="checkUserByPhone" resultMap="BaseResultMap" databaseId="mysql">
         select user_id, phonenumber
-        from sys_user
+        from ${prefix}sys_user
         where phonenumber = #{phonenumber} limit 1
     </select>
 
-    <select id="checkUserByEmail" resultMap="BaseResultMap">
+    <select id="checkUserByPhone" resultMap="BaseResultMap" databaseId="dm">
+        select user_id, phonenumber
+        from ${prefix}sys_user
+        where phonenumber = #{phonenumber} limit 1
+    </select>
+
+    <select id="checkUserByEmail" resultMap="BaseResultMap" databaseId="mysql">
         select user_id, email
-        from sys_user
+        from ${prefix}sys_user
         where email = #{email} limit 1
     </select>
 
-    <update id="batchUpdateDeleteMarks" parameterType="Long">
-        update sys_user set del_flag = 2 where user_id in
+    <select id="checkUserByEmail" resultMap="BaseResultMap" databaseId="dm">
+        select user_id, email
+        from ${prefix}sys_user
+        where email = #{email} limit 1
+    </select>
+
+    <update id="batchUpdateDeleteMarks" parameterType="Long" databaseId="mysql">
+        update ${prefix}sys_user set del_flag = 2 where user_id in
+        <foreach collection="list" item="userId" index="index" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateDeleteMarks" parameterType="Long" databaseId="dm">
+        update ${prefix}sys_user set del_flag = 2 where user_id in
         <foreach collection="list" item="userId" index="index" open="(" separator="," close=")">
             #{userId}
         </foreach>
     </update>
 
     <insert id="saveUser" parameterType="com.rongji.core.entity.system.SysUser" useGeneratedKeys="true"
-            keyProperty="userId">
-        insert into sys_user(
+            keyProperty="userId" databaseId="mysql">
+        insert into ${prefix}sys_user(
         <if test="userId != null and userId != 0">user_id,</if>
         <if test="deptId != null and deptId != 0">dept_id,</if>
         <if test="userName != null and userName != ''">user_name,</if>
@@ -124,8 +190,41 @@
         )
     </insert>
 
-    <update id="updateUserById" parameterType="com.rongji.core.entity.system.SysUser">
-        update sys_user
+    <insert id="saveUser" parameterType="com.rongji.core.entity.system.SysUser" useGeneratedKeys="true"
+            keyProperty="userId" databaseId="dm">
+        insert into ${prefix}sys_user(
+        <if test="userId != null and userId != 0">user_id,</if>
+        <if test="deptId != null and deptId != 0">dept_id,</if>
+        <if test="userName != null and userName != ''">user_name,</if>
+        <if test="nickName != null and nickName != ''">nick_name,</if>
+        <if test="email != null and email != ''">email,</if>
+        <if test="avatar != null and avatar != ''">avatar,</if>
+        <if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
+        <if test="gender != null and gender != ''">gender,</if>
+        <if test="password != null and password != ''">password,</if>
+        <if test="status != null and status != ''">status,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="userId != null and userId != ''">#{userId},</if>
+        <if test="deptId != null and deptId != ''">#{deptId},</if>
+        <if test="userName != null and userName != ''">#{userName},</if>
+        <if test="nickName != null and nickName != ''">#{nickName},</if>
+        <if test="email != null and email != ''">#{email},</if>
+        <if test="avatar != null and avatar != ''">#{avatar},</if>
+        <if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
+        <if test="gender != null and gender != ''">#{gender},</if>
+        <if test="password != null and password != ''">#{password},</if>
+        <if test="status != null and status != ''">#{status},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        #{createTime}
+        )
+    </insert>
+
+    <update id="updateUserById" parameterType="com.rongji.core.entity.system.SysUser" databaseId="mysql">
+        update ${prefix}sys_user
         <set>
             <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
             <if test="email != null ">email = #{email},</if>
@@ -138,8 +237,33 @@
         where user_id = #{userId}
     </update>
 
-    <update id="updatePassword" parameterType="com.rongji.core.entity.system.SysUser">
-        update sys_user
+    <update id="updateUserById" parameterType="com.rongji.core.entity.system.SysUser" databaseId="dm">
+        update ${prefix}sys_user
+        <set>
+            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="email != null ">email = #{email},</if>
+            <if test="phonenumber != null ">phonenumber = #{phonenumber},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+            update_by = #{updateBy},
+            update_time = #{updateTime}
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <update id="updatePassword" parameterType="com.rongji.core.entity.system.SysUser" databaseId="mysql">
+        update ${prefix}sys_user
+        <set>
+            password = #{password},
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            last_pwd_time = #{lastPwdTime}
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <update id="updatePassword" parameterType="com.rongji.core.entity.system.SysUser" databaseId="dm">
+        update ${prefix}sys_user
         <set>
             password = #{password},
             update_by = #{updateBy},

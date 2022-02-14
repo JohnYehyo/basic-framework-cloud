@@ -50,6 +50,7 @@ public class SysLoginController {
     @PostMapping(value = "login")
     public Object login(@Valid @RequestBody LoginAo loginAo){
         return sysLoginService.login(loginAo);
+//        return sysLoginService.centerLogin(loginAo);
     }
 
     /**

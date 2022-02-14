@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @description: 登录
@@ -54,6 +55,12 @@ public class SysLoginServiceImpl implements ISysLoginService {
 
     @Autowired
     private IOrgService orgService;
+
+    /**
+     * 令牌有效期（默认30分钟）
+     */
+    @Value("${token.expireTime}")
+    private int expireTime;
 
     @Value("${JohnYehyo.key}")
     private String KEY;
@@ -118,12 +125,12 @@ public class SysLoginServiceImpl implements ISysLoginService {
     private ResponseVo checkPasswordLimit(LoginUser loginUser, String token) {
         LocalDateTime lastPwdTime = loginUser.getUser().getLastPwdTime();
         //初始登录
-        if(null == lastPwdTime){
+        if (null == lastPwdTime) {
             return ResponseVo.response(ResponseEnum.PASSWORD_FIRST_LIMIT, token);
         }
         //超过最长使用限制时间未更新
-        Duration duration = Duration.between(lastPwdTime,  LocalDateTime.now());
-        if(duration.toDays() > PWD_TIME){
+        Duration duration = Duration.between(lastPwdTime, LocalDateTime.now());
+        if (duration.toDays() > PWD_TIME) {
             ResponseVo responseVo = new ResponseVo(ResponseEnum.PASSWORD_TIME_LIMIT.getCode(),
                     ResponseEnum.PASSWORD_TIME_LIMIT.getValue() + PWD_TIME + "天以上,请修改密码");
             responseVo.setData(token);
@@ -134,6 +141,7 @@ public class SysLoginServiceImpl implements ISysLoginService {
 
     /**
      * 校验验证码
+     *
      * @param loginAo
      */
     private void checkCaptcha(LoginAo loginAo) {
@@ -168,13 +176,13 @@ public class SysLoginServiceImpl implements ISysLoginService {
 
         String username = loginAo.getUserName();
         String password = loginAo.getPassword();
-        try {
-            byte[] key = KEY.getBytes("utf-8");
-            username = new String(AESUtils.decrypt(username, key), "utf-8");
-            password = new String(AESUtils.decrypt(password, key), "utf-8");
-        } catch (Exception e) {
-            throw new BusinessException(ResponseEnum.ENCRYPTION_TO_DECRYPT);
-        }
+//        try {
+//            byte[] key = KEY.getBytes("utf-8");
+//            username = new String(AESUtils.decrypt(username, key), "utf-8");
+//            password = new String(AESUtils.decrypt(password, key), "utf-8");
+//        } catch (Exception e) {
+//            throw new BusinessException(ResponseEnum.ENCRYPTION_TO_DECRYPT);
+//        }
 
         LoginedUser loginedUser = orgService.login(APPID, DOMAINID, username, password);
 
@@ -187,6 +195,8 @@ public class SysLoginServiceImpl implements ISysLoginService {
 
         LoginUser loginUser = refreshAuth(loginedUser);
         String token = tokenUtils.createToken(loginUser);
+
+        tokenUtils.setCenterCurrentUser(loginUser, loginedUser);
         return checkPasswordLimit(loginUser, token);
     }
 

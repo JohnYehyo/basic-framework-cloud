@@ -56,6 +56,7 @@
         <center-org.version>1.1.6</center-org.version>
         <elasticsearch.version>6.8.19</elasticsearch.version>
         <druid.version>1.2.8</druid.version>
+        <dm.version>18</dm.version>
     </properties>
 
 
@@ -271,6 +272,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.rjcloud.third</groupId>
+                <artifactId>DmJdbcDriver18</artifactId>
+                <version>${dm.version}</version>
             </dependency>
 
 

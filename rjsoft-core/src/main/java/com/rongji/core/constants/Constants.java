@@ -92,4 +92,9 @@ public class Constants {
 
     public static final String SENSITIVE_WORDS = "sensitive_words";
 
+    /**
+     * 中心当前用户
+     */
+    public static final String CENTER_CURRENT_USER = "loginedUser:";
+
 }

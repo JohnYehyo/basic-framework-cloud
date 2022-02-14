@@ -13,7 +13,7 @@ spring:
   application:
     name: rjsoft
   profiles:
-    active: druid
+    active: dm
   #jackson配置
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss

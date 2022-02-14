@@ -148,7 +148,8 @@ public class SysUserController {
     @ApiImplicitParam(name = "userId", value = "用户id", required = true)
     @PostMapping(value = "restPwd/{userId}")
     public Object restPwd(@PathVariable Long userId) {
-        String password = sysUserService.restPwd(userId);
+//        String password = sysUserService.restPwd(userId);
+        String password = sysUserService.restCenterPwd(userId);
         if (StringUtils.isNotEmpty(password)) {
             return ResponseVo.success(password);
         }

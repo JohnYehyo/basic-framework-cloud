@@ -17,7 +17,7 @@
         <result column="remark" property="remark"/>
     </resultMap>
 
-    <select id="getPages" resultType="com.rongji.core.vo.system.dict.SysDictDataVo">
+    <select id="getPages" resultType="com.rongji.core.vo.system.dict.SysDictDataVo" databaseId="mysql">
         select dict_code,
         dict_sort,
         dict_label,
@@ -26,7 +26,30 @@
         status,
         create_time,
         remark
-        from sys_dict_data
+        from ${prefix}sys_dict_data
+        <where>
+            <if test="param.dictLabel != null and param.dictLabel != ''">
+                dict_label = #{param.dictLabel}
+            </if>
+            <if test="param.dictType != null and param.dictType != ''">
+                and dict_type = #{param.dictType}
+            </if>
+            <if test="param.status != null">
+                and status = #{param.status}
+            </if>
+        </where>
+    </select>
+
+    <select id="getPages" resultType="com.rongji.core.vo.system.dict.SysDictDataVo" databaseId="dm">
+        select dict_code,
+        dict_sort,
+        dict_label,
+        dict_value,
+        dict_type,
+        status,
+        create_time,
+        remark
+        from ${prefix}sys_dict_data
         <where>
             <if test="param.dictLabel != null and param.dictLabel != ''">
                 dict_label = #{param.dictLabel}
@@ -41,7 +64,7 @@
     </select>
 
     <select id="listOfDict" resultType="com.rongji.core.vo.system.dict.DictDataVo">
-        select dict_code, dict_label, dict_value, dict_type from sys_dict_data
+        select dict_code, dict_label, dict_value, dict_type from ${prefix}sys_dict_data
     </select>
 
 </mapper>

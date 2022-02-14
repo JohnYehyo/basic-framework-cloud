@@ -5,6 +5,7 @@ import com.rongji.rjsoft.common.util.RedisCache;
 import com.rongji.rjsoft.common.util.ServletUtils;
 import com.rongji.rjsoft.common.util.http.IpUtils;
 import com.rongji.core.constants.Constants;
+import com.yskj.dao.dto.org.LoginedUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -191,5 +192,24 @@ public class TokenUtils {
 
     private String getTokenKey(String uuid) {
         return Constants.LOGIN_TOKEN_KEY + uuid;
+    }
+
+    /**
+     * 设置中心当前用户
+     * @param loginUser 当前用户
+     * @param loginedUser 中心登录用户
+     */
+    public void setCenterCurrentUser(LoginUser loginUser, LoginedUser loginedUser){
+        redisCache.setCacheObject(Constants.CENTER_CURRENT_USER + loginUser.getToken(), loginedUser, expireTime, TimeUnit.MINUTES);
+    }
+
+    /**
+     * 获取当前中心用户
+     * @param request request
+     * @return 中心用户
+     */
+    public LoginedUser getCenterCurrentUser(HttpServletRequest request){
+        LoginUser loginUser = getLoginUser(request);
+        return redisCache.getCacheObject(Constants.CENTER_CURRENT_USER + loginUser.getToken());
     }
 }

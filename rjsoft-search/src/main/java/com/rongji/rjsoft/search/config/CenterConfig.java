@@ -3,7 +3,6 @@ package com.rongji.rjsoft.search.config;
 import com.rongji.rjsoft.search.handler.MinaServerHandler;
 import com.yskj.minaserver.TextLineChineseCodecFactory;
 import com.yskj.minaserver.tcpKeepAliveMessageFactory;
-import com.yskj.service.org.appSessionListener;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.core.service.IoAcceptor;
@@ -17,7 +16,6 @@ import org.apache.mina.filter.logging.MdcInjectionFilter;
 import org.apache.mina.integration.beans.InetSocketAddressEditor;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +25,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.beans.PropertyEditor;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -136,19 +135,42 @@ public class CenterConfig implements EnvironmentAware {
     }
 
 
+//    <bean id="ioAcceptor" class="org.apache.mina.transport.socket.nio.NioSocketAcceptor" init-method="bind"
+//    destroy-method="unbind">
+//        <property name="defaultLocalAddress" value=":${yskj.mina.port}"/>
+//        <property name="handler" ref="minaServerHandler"/>
+//        <property name="reuseAddress" value="true"/>
+//        <property name="filterChainBuilder" ref="filterChainBuilder"/>
+//    </bean>
+
+//    @Bean
+//    public IoAcceptor ioAcceptor(){
+//        IoAcceptor ioAcceptor = new NioSocketAcceptor();
+//        ioAcceptor.setDefaultLocalAddress(inetSocketAddress());
+//        //自己实现的服务处理handler继承BaseServerHandler
+//        ioAcceptor.setHandler(minaServerHandler());
+//        ioAcceptor.setFilterChainBuilder(filterChainBuilder());
+//        try {
+//            ioAcceptor.bind();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return ioAcceptor;
+//    }
+
     @Bean
     public IoAcceptor ioAcceptor(){
-        IoAcceptor ioAcceptor = new NioSocketAcceptor();
-        ioAcceptor.setDefaultLocalAddress(inetSocketAddress());
-        //自己实现的服务处理handler继承BaseServerHandler
-        ioAcceptor.setHandler(minaServerHandler());
-        ioAcceptor.setFilterChainBuilder(filterChainBuilder());
+        IoAcceptor acceptor = new NioSocketAcceptor();
+        acceptor.setHandler(minaServerHandler());
+        acceptor.setFilterChainBuilder(filterChainBuilder());
+        acceptor.setCloseOnDeactivation(true);
+        SocketAddress socketAddress = inetSocketAddress();
         try {
-            ioAcceptor.bind();
+            acceptor.bind(new SocketAddress[] {socketAddress});
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ioAcceptor;
+        return acceptor;
     }
 
 }

@@ -14,8 +14,29 @@
         <result column="login_time" property="loginTime"/>
     </resultMap>
 
-    <select id="getPages" resultType="com.rongji.core.vo.monitor.login.LoginInfoVo">
-        select user_name, ip, browser, os, status, msg, login_time from sys_login_info
+    <select id="getPages" resultType="com.rongji.core.vo.monitor.login.LoginInfoVo" databaseId="mysql">
+        select user_name, ip, browser, os, status, msg, login_time from ${prefix}sys_login_info
+        <where>
+            <if test="null!= param.userName and param.userName != ''">
+                user_name like concat ('%', #{param.userName}, '%')
+            </if>
+            <choose>
+                <when test="null != param.beginTime and null != param.endTime">
+                    AND login_time between #{param.beginTime} and #{param.endTime}
+                </when>
+                <when test="null != param.beginTime">
+                    AND login_time &gt;= #{param.beginTime}
+                </when>
+                <when test="null != param.endTime">
+                    AND login_time &lt;= #{param.endTime}
+                </when>
+                <otherwise></otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="getPages" resultType="com.rongji.core.vo.monitor.login.LoginInfoVo" databaseId="dm">
+        select user_name, ip, browser, os, status, msg, login_time from ${prefix}sys_login_info
         <where>
             <if test="null!= param.userName and param.userName != ''">
                 user_name like concat ('%', #{param.userName}, '%')

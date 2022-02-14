@@ -16,16 +16,37 @@
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
-    <select id="getSimpleAsynchTreeByCode" parameterType="string" resultType="com.rongji.core.vo.system.branch.BranchTreeVo">
+    <select id="getSimpleAsynchTreeByCode" parameterType="string"
+            resultType="com.rongji.core.vo.system.branch.BranchTreeVo"
+            databaseId="mysql">
         select branch_code, branch_name, parent_code
-        from sys_branch
+        from ${prefix}sys_branch
         where branch_code = #{branchCode}
           and status = 0
     </select>
 
-    <select id="getAsynchTreeByCode" parameterType="string" resultType="com.rongji.core.vo.system.branch.BranchTreeVo">
+    <select id="getSimpleAsynchTreeByCode" parameterType="string"
+            resultType="com.rongji.core.vo.system.branch.BranchTreeVo"
+            databaseId="dm">
         select branch_code, branch_name, parent_code
-        from sys_branch
+        from ${prefix}sys_branch
+        where branch_code = #{branchCode}
+          and status = 0
+    </select>
+
+    <select id="getAsynchTreeByCode" parameterType="string"
+            resultType="com.rongji.core.vo.system.branch.BranchTreeVo" databaseId="mysql">
+        select branch_code, branch_name, parent_code
+        from ${prefix}sys_branch
+        where parent_code = #{branchCode}
+          and status = 0
+        order by branch_code
+    </select>
+
+    <select id="getAsynchTreeByCode" parameterType="string"
+            resultType="com.rongji.core.vo.system.branch.BranchTreeVo" databaseId="dm">
+        select branch_code, branch_name, parent_code
+        from ${prefix}sys_branch
         where parent_code = #{branchCode}
           and status = 0
         order by branch_code

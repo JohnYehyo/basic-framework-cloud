@@ -87,4 +87,11 @@ public interface ISysUserService extends IService<SysUser> {
      * @return 重置结果
      */
     String restPwd(Long userId);
+
+    /**
+     * 重置密码中心版
+     * @param userId
+     * @return
+     */
+    String restCenterPwd(Long userId);
 }

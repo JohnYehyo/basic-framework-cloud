@@ -45,6 +45,14 @@ swagger:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    database-id: mysql
+  global-config:
+    # 数据库相关配置
+    db-config:
+      db-type: mysql
+      table-prefix: rjcloud_db.
+  configuration-properties:
+    prefix: rjcloud_db.
 
 xxl:
   job:

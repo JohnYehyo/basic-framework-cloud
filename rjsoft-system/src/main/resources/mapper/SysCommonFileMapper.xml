@@ -17,8 +17,19 @@
     </resultMap>
 
     <select id="getFiles" parameterType="com.rongji.core.query.common.SysCommonFileQuery"
-            resultType="com.rongji.core.vo.common.SysCommonFileVo">
-        select file_url, file_name, file_type from sys_common_file
+            resultType="com.rongji.core.vo.common.SysCommonFileVo" databaseId="mysql">
+        select file_url, file_name, file_type from ${prefix}sys_common_file
+        <where>
+            table_id = #{tableId} and table_type = #{tableType}
+            <if test="null != fileType">
+                and file_type = #{fileType}
+            </if>
+        </where>
+    </select>
+
+    <select id="getFiles" parameterType="com.rongji.core.query.common.SysCommonFileQuery"
+            resultType="com.rongji.core.vo.common.SysCommonFileVo" databaseId="dm">
+        select file_url, file_name, file_type from ${prefix}sys_common_file
         <where>
             table_id = #{tableId} and table_type = #{tableType}
             <if test="null != fileType">
