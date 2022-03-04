@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rongji.core.ao.system.SysDeptAo;
+import com.rongji.core.enums.DelFlagEnum;
 import com.rongji.core.vo.system.dept.SysDeptAllTreeInfoVo;
 import com.rongji.core.vo.system.dept.SysDeptAllTreeVo;
 import com.rongji.core.vo.system.dept.SysDeptTreeVo;
@@ -214,6 +215,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     private boolean isLeaf(SysDeptTreeVo sysDeptTreeVo) {
         LambdaQueryWrapper<SysDept> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysDept::getParentId, sysDeptTreeVo.getDeptId());
+        wrapper.eq(SysDept::getDelFlag, DelFlagEnum.EXIST.getValue());
         Integer count = sysDeptMapper.selectCount(wrapper);
         return count > 0 ? false : true;
     }
